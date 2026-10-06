@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>MongoDB Test</title>
+</head>
+
+<body>
+
+    <h2>MongoDB Test</h2>
+    <div id="status">status: checking...</div>
+
+    <br>
+
+    <label>name</label><br>
+    <input id="c-name" type="text" placeholder="name" /><br><br>
+
+    <label>email</label><br>
+    <input id="c-email" type="email" placeholder="email" /><br><br>
+
+    <label>password</label><br>
+    <input id="c-password" type="password" placeholder="password" /><br><br>
+
+    <button onclick="createUser()">create</button>
+
+    <pre id="r-create">-</pre>
+
+    <script>
+        const BASE = '/api';
+
+        async function req(method, path, body) {
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(BASE + path, opts);
+            const data = await res.json().catch(() => ({}));
+            return { ok: res.ok, data };
+        }
+
+        req('GET', '/users').then(({ ok, data }) => {
+            document.getElementById('status').textContent =
+                ok ? 'status: connected (' + data.length + ' users)' : 'status: error';
+        }).catch(() => {
+            document.getElementById('status').textContent = 'status: cannot connect';
+        });
+
+        async function createUser() {
+            const name = document.getElementById('c-name').value.trim();
+            const email = document.getElementById('c-email').value.trim();
+            const password = document.getElementById('c-password').value;
+            const { data } = await req('POST', '/users', { name, email, password });
+            document.getElementById('r-create').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+
+</html>
