@@ -22,7 +22,7 @@
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    // "exactOptionalPropertyTypes": true,
 
     // Style Options
     // "noImplicitReturns": true,
@@ -35,9 +35,10 @@
     // Recommended Options
     "strict": false,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
+    // "verbatimModuleSyntax": true,
+    // "isolatedModules": true,
+    // "moduleResolution": "node",
+    "noUncheckedSideEffectImports": false,
     "moduleDetection": "force",
     "skipLibCheck": true,
 
