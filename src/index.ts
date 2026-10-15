@@ -9,16 +9,28 @@ import path from 'path';
 const app = express();
 const port = process.env.PORT || 3000;
 
-// อ่าน connection string จาก config.json (ไม่ต้องใส่รหัสผ่านในโค้ด / ขึ้น GitHub)
-const data: string = fs.readFileSync(path.join(__dirname, 'config.json'), {
-  encoding: 'utf8',
-  flag: 'r',
-});
-const config = JSON.parse(data);
-const mongoUri: string = config.connection;
+// อ่าน connection string จาก Environment variable, config.json หรือค่าเริ่มต้น
+let mongoUri = process.env.MONGO_URI || process.env.CONNECTION || '';
 
-// หรือใส่ตรง ๆ แบบนี้ (ไม่แนะนำ):
-// const mongoUri = 'mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+if (!mongoUri) {
+  try {
+    const configPath = path.join(__dirname, 'config.json');
+    if (fs.existsSync(configPath)) {
+      const data: string = fs.readFileSync(configPath, {
+        encoding: 'utf8',
+        flag: 'r',
+      });
+      const config = JSON.parse(data);
+      mongoUri = config.connection;
+    }
+  } catch (err) {
+    console.warn('Could not read config.json:', err);
+  }
+}
+
+if (!mongoUri) {
+  mongoUri = 'mongodb+srv://pantaweeth_db_user:safe5599@cluster0.lgcoits.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+}
 
 // Middleware
 app.use(express.json());
