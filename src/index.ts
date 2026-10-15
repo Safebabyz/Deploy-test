@@ -40,10 +40,13 @@ app.use(cors());
 // โฟลเดอร์ public html
 app.use(express.static(path.join(__dirname, 'public')));
 
-// หน้าแรก (/) ให้เปิด test.html
-app.get('/', (req, res) => {
+// กำหนด handler ให้เปิดหน้า test.html
+const handler = (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(__dirname, 'public', 'test.html'));
-});
+};
+
+app.get('/', handler);
+app.get('/test', handler);
 
 // Routes
 app.use('/api', userRoutes);
