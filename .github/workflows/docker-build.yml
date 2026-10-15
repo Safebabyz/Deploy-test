@@ -39,4 +39,6 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: safebabayz/test:latest
+          tags: |
+            safebabayz/test:latest
+            safebabayz/test:v2
