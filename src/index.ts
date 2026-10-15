@@ -1,13 +1,13 @@
 import express from 'express';
-// import { Utils } from './Utils'; // ของเดิมจาก unit test (เปิดใช้ถ้ามีไฟล์ Utils.ts)
+// import { Utils } from './Utils';
 import mongoose from 'mongoose';
 import userRoutes from './UserRoutes';
-import cors from 'cors'; // npm install --save-dev @types/cors
+import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // อ่าน connection string จาก Environment variable, config.json หรือค่าเริ่มต้น
 let mongoUri = process.env.MONGO_URI || process.env.CONNECTION || '';
@@ -28,11 +28,6 @@ if (!mongoUri) {
   }
 }
 
-if (!mongoUri) {
-  console.error('ERROR: MONGO_URI environment variable or config.json is required!');
-  process.exit(1);
-}
-
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -51,14 +46,21 @@ app.get('/test', handler);
 // Routes
 app.use('/api', userRoutes);
 
-mongoose
-  .connect(mongoUri)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+// 1. สั่งเปิดพอร์ตรอรับ Request และ Health Check จาก Azure ทันที
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on 0.0.0.0:${PORT}`);
+});
+
+// 2. เชื่อมต่อ MongoDB
+if (mongoUri) {
+  mongoose
+    .connect(mongoUri)
+    .then(() => {
+      console.log('Connected to MongoDB');
+    })
+    .catch((err) => {
+      console.error('Error connecting to MongoDB:', err);
     });
-  })
-  .catch((err) => {
-    console.error('Error connecting to MongoDB:', err);
-  });
+} else {
+  console.warn('WARNING: No MONGO_URI provided, running without database connection.');
+}
