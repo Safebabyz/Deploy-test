@@ -27,6 +27,11 @@ app.use(cors());
 // โฟลเดอร์ public html
 app.use(express.static(path.join(__dirname, 'public')));
 
+// หน้าแรก (/) ให้เปิด test.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'test.html'));
+});
+
 // Routes
 app.use('/api', userRoutes);
 
