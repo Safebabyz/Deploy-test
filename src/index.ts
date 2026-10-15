@@ -29,7 +29,8 @@ if (!mongoUri) {
 }
 
 if (!mongoUri) {
-  mongoUri = 'mongodb+srv://pantaweeth_db_user:safe5599@cluster0.lgcoits.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+  console.error('ERROR: MONGO_URI environment variable or config.json is required!');
+  process.exit(1);
 }
 
 // Middleware
